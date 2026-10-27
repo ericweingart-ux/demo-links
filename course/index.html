@@ -3,8 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0; url=https://packs-differential-brad-hay.trycloudflare.com">
-<title>Opening the Accounting course...</title>
+<title>Opening the Accounting course…</title>
 <style>
   :root{color-scheme:light dark}
   body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b0b0c;color:#e7e7ea;display:grid;place-items:center;min-height:100vh;margin:0}
@@ -12,14 +11,33 @@
   h1{font-size:1.25rem;font-weight:600;margin:0 0 .5rem}
   a{color:#7c9cff}
   .fine{opacity:.55;font-size:.8rem;margin-top:1.25rem}
+  #fb{display:none}
 </style>
-<script>location.replace("https://packs-differential-brad-hay.trycloudflare.com")</script>
 </head>
 <body>
 <div class="card">
-  <h1>Opening the Accounting course...</h1>
-  <p>If it doesn't open automatically, <a href="https://packs-differential-brad-hay.trycloudflare.com">click here</a>.</p>
-  <p class="fine">Temporary demo link, served from a laptop while Railway is down. This page just forwards you to the current address.</p>
+  <h1>Opening the Accounting course…</h1>
+  <p id="go">One moment…</p>
+  <p id="fb">Couldn't reach the course right now — the host laptop may be off. Ping Eric in #sales_engineers.</p>
+  <p class="fine">Temporary demo link, served from a laptop while Railway is down. This page always forwards you to the current address.</p>
 </div>
+<script>
+  // Read the CURRENT target fresh on every load (cache-busted) so a cached copy
+  // of this page can never send anyone to a stale/dead tunnel.
+  (function(){
+    var KEY = "course";
+    fetch("../targets.json?cb=" + Date.now(), {cache: "no-store"})
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var u = j && j[KEY];
+        if(u){
+          document.getElementById("go").innerHTML = 'If it does not open automatically, <a href="'+u+'">click here</a>.';
+          location.replace(u);
+        } else { fail(); }
+      })
+      .catch(fail);
+    function fail(){ document.getElementById("go").style.display="none"; document.getElementById("fb").style.display="block"; }
+  })();
+</script>
 </body>
 </html>
